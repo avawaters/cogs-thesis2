@@ -7,7 +7,7 @@ var timeline = [];
 // capture info from Prolific
 //const subject_id = jsPsych.data.getURLVariable('PROLIFIC_PID');
 const subject_id = jsPsych.randomization.randomID(10);
-const fname = `rate-${subject_id}.json`;
+const fname = `${subject_id}.json`;
 
 // STIMULI FILES
 // array of arrays of arrays, where the first array holds predictable melodies,
@@ -233,7 +233,7 @@ var conditional_intermission = {
 const save_data = {
     type: jsPsychPipe,
     action: "save",
-    experiment_id: "QfKXr6jPLyzT",
+    experiment_id: "lCdmw0LCrwtj",
     filename: fname,
     data_string: ()=>jsPsych.data.get().json()
   };
