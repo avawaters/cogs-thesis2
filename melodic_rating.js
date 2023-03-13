@@ -7,7 +7,7 @@ var timeline = [];
 // capture info from Prolific
 //const subject_id = jsPsych.data.getURLVariable('PROLIFIC_PID');
 const subject_id = jsPsych.randomization.randomID(10);
-const fname = `${subject_id}.json`;
+const fname = `test-${subject_id}.json`;
 
 // STIMULI FILES
 // array of arrays of arrays, where the first array holds predictable melodies,
@@ -17,14 +17,14 @@ const fname = `${subject_id}.json`;
 //                            the third element contains the seed 3 melodies,
 //                            and the fourth element contains the seed 4 melodies
 // TO ACCESS ONE FILE: all_stimuli[pred][seed][range]
-all_stimuli = [[["stimuli/high/seed_1p-gen9-high.mp3", "stimuli/low/seed_1p-gen9-low.mp3"],
-    ["stimuli/high/seed_2p-gen9-high.mp3", "stimuli/low/seed_2p-gen9-low.mp3"],
-    ["stimuli/high/seed_3p-gen9-high.mp3", "stimuli/low/seed_3p-gen9-low.mp3"],
-    ["stimuli/high/seed_4p-gen9-high.mp3", "stimuli/low/seed_4p-gen9-low.mp3"]],
-    [["stimuli/high/seed_1u-gen9-high.mp3", "stimuli/low/seed_1u-gen9-low.mp3"],
-    ["stimuli/high/seed_2u-gen9-high.mp3", "stimuli/low/seed_2u-gen9-low.mp3"], 
-    ["stimuli/high/seed_3u-gen9-high.mp3", "stimuli/low/seed_3u-gen9-low.mp3"], 
-    ["stimuli/high/seed_4u-gen9-high.mp3", "stimuli/low/seed_4u-gen9-low.mp3"]]]
+all_stimuli = [[["stimuli/high/seed_1p-gen_9-high.mp3", "stimuli/low/seed_1p-gen_9-low.mp3"],
+    ["stimuli/high/seed_2p-gen_9-high.mp3", "stimuli/low/seed_2p-gen_9-low.mp3"],
+    ["stimuli/high/seed_3p-gen_9-high.mp3", "stimuli/low/seed_3p-gen_9-low.mp3"],
+    ["stimuli/high/seed_4p-gen_9-high.mp3", "stimuli/low/seed_4p-gen_9-low.mp3"]],
+    [["stimuli/high/seed_1u-gen_9-high.mp3", "stimuli/low/seed_1u-gen_9-low.mp3"],
+    ["stimuli/high/seed_2u-gen_9-high.mp3", "stimuli/low/seed_2u-gen_9-low.mp3"], 
+    ["stimuli/high/seed_3u-gen_9-high.mp3", "stimuli/low/seed_3u-gen_9-low.mp3"], 
+    ["stimuli/high/seed_4u-gen_9-high.mp3", "stimuli/low/seed_4u-gen_9-low.mp3"]]]
 
 function select_stimuli() {
     // EACH ARRAY HAS 8 ELEMENTS CHARACTERIZING EACH OF THE 8 STIMULI
@@ -55,21 +55,18 @@ function select_stimuli() {
 // return the melody version as "p" or "u"
 function get_version(s) {
     pred = s.split('_')[1][1]
-    console.log(pred)
     return pred
 }
 
 // return the melody number (not including prefix "seed_")
 function get_melody(s) {
     mel = s.split('/')[2].split('_')[1][0]
-    console.log(mel)
     return mel
 }
 
 // return the range (0 = high, 1 = low)
 function get_range(s) {
     r = s.split('-')[2].split('.')[0]
-    console.log(r)
     // return 0 if high, 1 if low
     if (r == "high") {
         return 0
@@ -96,7 +93,7 @@ timeline.push(welcome);
 
 var instructions = {
     type: jsPsychHtmlButtonResponse,
-    stimulus: "<p>In this experiment, you will be listen to and rate 8 melodies.</p>><p>Please rate each melody based on how much you like it. Each melody will be played once and can be played up to three times.</p>To continue, hit the 'Next' button'.",
+    stimulus: "<p>In this experiment, you will listen to and rate 8 melodies.</p><p>Please rate each melody based on how much you like it. Each melody will be played once and can be played up to three times.</p>To continue, hit the 'Next' button'.",
     choices: ["Next"]
 };
 
@@ -169,7 +166,7 @@ timeline.push(start_experiment);
 
 // PROCEDURE EVENTS
 // count number of times melody has been played (can't exceed 3)
-var times_played = 0;
+var times_played = 1;
 
 var play_melody = {
     type: jsPsychAudioButtonResponse,
@@ -177,18 +174,23 @@ var play_melody = {
     prompt: "<img src='images/notes.png'></img>",
     choices: ["Replay", "Rate"],
     response_allowed_while_played: false,
-    on_finish: function (data) {
-            times_played++;
-    }
+    on_start: function () { console.log(times_played) }
+    // is there a way to automatically go to rating event if it's the 3rd time being played?
 } 
 
-var conditional_repeat_melody = {
+// allow replay if participant clicks replay button and they've heard < 3 times
+var conditional_replay_melody = {
     timeline: [play_melody],
     loop_function: function(data){
-        if ((times_played < 3) && (jsPsych.data.get().last(1).values()[0].response == 0)) {
-            return true;
-        } else {
+        if (jsPsych.data.get().last(1).values()[0].response == 1) {
+            console.log("chose rate")
             return false;
+        } else if (times_played > 2) {
+            console.log("peat x3")
+            return false
+        } else {
+            ++times_played;
+            return true;
         }
     }
 }
@@ -197,8 +199,8 @@ var rate_melody = {
     type: jsPsychSurveyLikert,
     questions: [
         {
-            prompt: "On a scale of 1-7, how much did you enjoy this melody?",
-            labels: ["1\n(not at all)", "2", "3", "4", "5", "6", "7\n(really like it)"],
+            prompt: "How much do you enjoy this melody?",
+            labels: ["1\n(not at all)", "2", "3", "4", "5", "6", "7\n(very much)"],
             required: true
         }
     ],
@@ -211,7 +213,7 @@ var rate_melody = {
     },
     on_finish: function () {
         // reset for next melody
-        times_played = 0
+        times_played = 1
     }
 };
 
@@ -248,7 +250,7 @@ var conditional_save_data = {
 
 // run experimental trials
 var listen_and_respond_procedure = {
-    timeline: [play_melody, conditional_repeat_melody, rate_melody, conditional_intermission, conditional_save_data ],
+    timeline: [conditional_replay_melody, rate_melody, conditional_intermission, conditional_save_data],
     timeline_variables: [
         {
             "file": function () { return stimuli[0] },
@@ -319,14 +321,14 @@ var debrief = {
 // give detailed debriefing to participant
 var full_debrief = {
     type: jsPsychHtmlKeyboardResponse,
-    stimulus: "<p>This experiment is exploring the relationship between melodic predictability and listener pleasure. You are a part of the group that is rating these melodies. As you may have noticed, there are four pairs of melodies that have the same beginning. These melodies were continued and finished by other participants who sung what note they thought came next. Their responses generated most of what you heard. At one point in each melody, there is one version that continued with the most predictable note and one version that continued with an unpredictable note. These two mutations of the melodies were then developed in parallel. As you heard both versions of all four melodies, your ratings will be used to investigate if predictability affects how much you enjoyed them. </p><a href='https://www.vassar.edu/'>CLICK HERE</a> to return to Prolific and complete the study.",
+    stimulus: "<p>This experiment is exploring the relationship between melodic predictability and listener pleasure. You are a part of the group that is rating these melodies. As you may have noticed, there are four pairs of melodies that have the same beginning. These melodies were continued and finished by other participants who sung what note they thought came next. Their responses generated most of what you heard. At one point in each melody, there is one version that continued with the most predictable note and one version that continued with an unpredictable note. These two mutations of the melodies were then developed in parallel. As you heard both versions of all four melodies, your ratings will be used to investigate if predictability affects how much you enjoy them. </p><a href='https://www.vassar.edu/'>CLICK HERE</a> to return to Prolific and complete the study.",
     choices: "NO_KEYS"
 };
 
 var conditional_full_debrief = {
     timeline: [full_debrief],
     conditional_function: function () {
-        return (jsPsych.data.get().last(1).values()[0].response.Q0 == 0);
+        return (jsPsych.data.get().last(1).values()[0].response == 0);
     }
 }
 
