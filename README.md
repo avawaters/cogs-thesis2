@@ -1,1 +1,1 @@
-# Phase 2 of Ava Water's COGS Senior Thesis
+# Phase 2 of Ava Waters' COGS Senior Thesis
