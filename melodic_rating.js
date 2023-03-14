@@ -93,7 +93,7 @@ timeline.push(welcome);
 
 var instructions = {
     type: jsPsychHtmlButtonResponse,
-    stimulus: "<p>In this experiment, you will listen to and rate 8 melodies.</p><p>Please rate each melody based on how much you like it. Each melody will be played once and can be played up to three times.</p>To continue, hit the 'Next' button'.",
+    stimulus: "<p>In this experiment, you will listen to and rate 8 melodies.</p><p>Please rate each melody based on how much you like it. Each melody will be played once and can be played up to three times.</p>To continue, hit the 'Next' button.",
     choices: ["Next"]
 };
 
@@ -144,7 +144,7 @@ var lessons_cont_qs = {
             options: ["Yes", "No"],
             required: true
         }
-    ],
+    ]
 };
 
 var conditional_qs = {
@@ -173,9 +173,7 @@ var play_melody = {
     stimulus: jsPsych.timelineVariable("file"),
     prompt: "<img src='images/notes.png'></img>",
     choices: ["Replay", "Rate"],
-    response_allowed_while_played: false,
-    on_start: function () { console.log(times_played) }
-    // is there a way to automatically go to rating event if it's the 3rd time being played?
+    response_allowed_while_playing: false
 } 
 
 // allow replay if participant clicks replay button and they've heard < 3 times
@@ -183,10 +181,8 @@ var conditional_replay_melody = {
     timeline: [play_melody],
     loop_function: function(data){
         if (jsPsych.data.get().last(1).values()[0].response == 1) {
-            console.log("chose rate")
             return false;
         } else if (times_played > 2) {
-            console.log("peat x3")
             return false
         } else {
             ++times_played;
@@ -206,21 +202,19 @@ var rate_melody = {
     ],
     data: {
         task: "rate",
-        pred: jsPsych.timelineVariable("version"),
+        version: jsPsych.timelineVariable("version"),
         melody: jsPsych.timelineVariable("melody"),
         range: jsPsych.timelineVariable("range"),
         n_plays: times_played
-    },
-    on_finish: function () {
-        // reset for next melody
-        times_played = 1
     }
 };
 
 var trial_intermission = {
     type: jsPsychHtmlButtonResponse,
     stimulus: "Click the button to continue to the next melody.",
-    choices: ["Next"]
+    choices: ["Next"],
+    // reset for next melody
+    on_finish: function() { times_played = 1}
 };
 
 // determine when to display intermission (trials 1-7)
