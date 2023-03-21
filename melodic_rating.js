@@ -205,7 +205,7 @@ var rate_melody = {
         version: jsPsych.timelineVariable("version"),
         melody: jsPsych.timelineVariable("melody"),
         range: jsPsych.timelineVariable("range"),
-        n_plays: times_played
+        n_plays: function () { return times_played }
     }
 };
 
