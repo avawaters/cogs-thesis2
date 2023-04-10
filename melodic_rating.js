@@ -5,9 +5,8 @@ var jsPsych = initJsPsych({});
 var timeline = [];
 
 // capture info from Prolific
-//const subject_id = jsPsych.data.getURLVariable('PROLIFIC_PID');
-const subject_id = jsPsych.randomization.randomID(10);
-const fname = `test-${subject_id}.json`;
+const subject_id = jsPsych.data.getURLVariable('PROLIFIC_PID');
+const fname = `${subject_id}.json`;
 
 // STIMULI FILES
 // array of arrays of arrays, where the first array holds predictable melodies,
@@ -17,14 +16,14 @@ const fname = `test-${subject_id}.json`;
 //                            the third element contains the seed 3 melodies,
 //                            and the fourth element contains the seed 4 melodies
 // TO ACCESS ONE FILE: all_stimuli[pred][seed][range]
-all_stimuli = [[["stimuli/high/seed_1p-gen_9-high.mp3", "stimuli/low/seed_1p-gen_9-low.mp3"],
-    ["stimuli/high/seed_2p-gen_9-high.mp3", "stimuli/low/seed_2p-gen_9-low.mp3"],
-    ["stimuli/high/seed_3p-gen_9-high.mp3", "stimuli/low/seed_3p-gen_9-low.mp3"],
-    ["stimuli/high/seed_4p-gen_9-high.mp3", "stimuli/low/seed_4p-gen_9-low.mp3"]],
-    [["stimuli/high/seed_1u-gen_9-high.mp3", "stimuli/low/seed_1u-gen_9-low.mp3"],
-    ["stimuli/high/seed_2u-gen_9-high.mp3", "stimuli/low/seed_2u-gen_9-low.mp3"], 
-    ["stimuli/high/seed_3u-gen_9-high.mp3", "stimuli/low/seed_3u-gen_9-low.mp3"], 
-    ["stimuli/high/seed_4u-gen_9-high.mp3", "stimuli/low/seed_4u-gen_9-low.mp3"]]]
+all_stimuli = [[["stimuli/high/seed_1p-high.mp3", "stimuli/low/seed_1p-low.mp3"],
+    ["stimuli/high/seed_2p-high.mp3", "stimuli/low/seed_2p-low.mp3"],
+    ["stimuli/high/seed_3p-high.mp3", "stimuli/low/seed_3p-low.mp3"],
+    ["stimuli/high/seed_4p-high.mp3", "stimuli/low/seed_4p-low.mp3"]],
+    [["stimuli/high/seed_1u-high.mp3", "stimuli/low/seed_1u-low.mp3"],
+    ["stimuli/high/seed_2u-high.mp3", "stimuli/low/seed_2u-low.mp3"], 
+    ["stimuli/high/seed_3u-high.mp3", "stimuli/low/seed_3u-low.mp3"], 
+    ["stimuli/high/seed_4u-high.mp3", "stimuli/low/seed_4u-low.mp3"]]]
 
 function select_stimuli() {
     // EACH ARRAY HAS 8 ELEMENTS CHARACTERIZING EACH OF THE 8 STIMULI
@@ -50,6 +49,8 @@ function select_stimuli() {
         melody = all_stimuli[pred_order[i]][melody_order[i]][ranges[i]]
         stimuli.push(melody)
     }
+    //DEBUG
+    console.log(stimuli);
 }
 
 // return the melody version as "p" or "u"
@@ -60,13 +61,13 @@ function get_version(s) {
 
 // return the melody number (not including prefix "seed_")
 function get_melody(s) {
-    mel = s.split('/')[2].split('_')[1][0]
+    mel = s.split('_')[1][0]
     return mel
 }
 
 // return the range (0 = high, 1 = low)
 function get_range(s) {
-    r = s.split('-')[2].split('.')[0]
+    r = s.split('-')[1].split('.')[0]
     // return 0 if high, 1 if low
     if (r == "high") {
         return 0
@@ -93,7 +94,7 @@ timeline.push(welcome);
 
 var instructions = {
     type: jsPsychHtmlButtonResponse,
-    stimulus: "<p>In this experiment, you will listen to and rate 8 melodies.</p><p>Please rate each melody based on how much you like it. Each melody will be played once and can be played up to three times.</p>To continue, hit the 'Next' button.",
+    stimulus: "<p>In this experiment, you are asked to listen to and rate 8 melodies.</p><p>Please rate each melody based on how much you like it. Each melody will be played once and can be played up to three times.</p>To continue, hit the 'Next' button.",
     choices: ["Next"]
 };
 
