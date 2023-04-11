@@ -308,7 +308,7 @@ var debrief = {
     // Get button selected
     on_finish: function (data) {
         if (data.response == 1) {
-            window.location.href = "https://www.vassar.edu/";
+            window.location.href = "https://app.prolific.co/submissions/complete?cc=C14MF51X";
         }
     }
 };
@@ -316,7 +316,7 @@ var debrief = {
 // give detailed debriefing to participant
 var full_debrief = {
     type: jsPsychHtmlKeyboardResponse,
-    stimulus: "<p>This experiment is exploring the relationship between melodic predictability and listener pleasure. You are a part of the group that is rating these melodies. As you may have noticed, there are four pairs of melodies that have the same beginning. These melodies were continued and finished by other participants who sung what note they thought came next. Their responses generated most of what you heard. At one point in each melody, there is one version that continued with the most predictable note and one version that continued with an unpredictable note. These two mutations of the melodies were then developed in parallel. As you heard both versions of all four melodies, your ratings will be used to investigate if predictability affects how much you enjoy them. </p><a href='https://www.vassar.edu/'>CLICK HERE</a> to return to Prolific and complete the study.",
+    stimulus: "<p>This experiment is exploring the relationship between melodic predictability and listener pleasure. You are a part of the group that is rating these melodies. As you may have noticed, there are four pairs of melodies that have the same beginning. These melodies were continued and finished by other participants who sung what note they thought came next. Their responses generated most of what you heard. At one point in each melody, there is one version that continued with the most predictable note and one version that continued with an unpredictable note. These two mutations of the melodies were then developed in parallel. As you heard both versions of all four melodies, your ratings will be used to investigate if predictability affects how much you enjoy them. </p><a href='https://app.prolific.co/submissions/complete?cc=C14MF51X'>CLICK HERE</a> to return to Prolific and complete the study.",
     choices: "NO_KEYS"
 };
 
